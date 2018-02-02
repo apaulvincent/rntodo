@@ -8,7 +8,8 @@ import {
   ScrollView,
   AsyncStorage,
   UIManager,
-  Animated  
+  Animated,
+  Dimensions
 } from 'react-native';
 
 import Note from './Note';
@@ -21,10 +22,17 @@ export default class Main extends Component<{}> {
 
         this.scrollValue = new Animated.Value(0)
 
+        const { width, height } = Dimensions.get('window');
+        const edgeLength = 100;
+        const axisX = (width / 2) - (edgeLength / 2);
+        const axisY = (height / 2) - (edgeLength / 2);
+
         this.state = {
             noteArray: [],
             noteText: '',
-            noteItemMeasure: null
+            noteItemMeasure: null,
+            panAnimation: new Animated.ValueXY({ x: axisX , y: axisY }),
+            scaleAnimation: new Animated.Value(30),
         }
     }
 
@@ -108,19 +116,35 @@ export default class Main extends Component<{}> {
         } )
     }
 
+    editNote = (dimension) => {
+
+        let {scaleAnimation} = this.state;
+
+        this.setState({noteItemMeasure: dimension }, ()=> {
+
+            Animated.spring(
+                scaleAnimation, {
+                  toValue: 100,
+                  friction: 3
+                }
+              ).start();
+
+        });
+
+
+
+    }
+
     render() {
 
         let notes = this.state.noteArray.map( (v, k) => {
             return <Note key={k} keyval={k} val={v} 
                         handleDelete={ () => { this.deleteNote(k) } } 
-                        handleEdit={ ( dim ) => { 
-                            this.setState({noteItemMeasure: dim});
-                        }} 
+                        handleEdit={ this.editNote } 
                     />
         })
 
-
-        let {noteItemMeasure} = this.state;
+        let {noteItemMeasure, scaleAnimation} = this.state;
 
         let handleScroll = Animated.event([
             {nativeEvent: {contentOffset: {y: this.scrollValue}}},
@@ -140,18 +164,17 @@ export default class Main extends Component<{}> {
 
             {
                 noteItemMeasure ? 
-                <View style={{
+                <Animated.View style={{
                         position: 'absolute',
                         zIndex: 10,
                         width: noteItemMeasure.width,
-                        height: noteItemMeasure.height,
+                        height: scaleAnimation,
                         backgroundColor: 'blue',
                         transform: [{
                             translate: [ noteItemMeasure.x, noteItemMeasure.y - this.scrollValue.__getValue() ]
                         }]
-                    }}></View> : null
+                    }}></Animated.View> : null
             }
-
 
             <View style={styles.footer}>
                 <TextInput

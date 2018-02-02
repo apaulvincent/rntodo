@@ -22,7 +22,6 @@ export default class Note extends Component<{}> {
 
 
     getDimension = (e) => {
-        console.log(e.nativeEvent)
         this.setState({
             dimension: e.nativeEvent.layout
         })
@@ -38,7 +37,6 @@ export default class Note extends Component<{}> {
 
 
   render() {
-
 
     const trunc = this.props.val.note.length < 20 ? this.props.val.note :  this.props.val.note.trim().substring(0, 20) + '...';
 
