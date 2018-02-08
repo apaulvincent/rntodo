@@ -4,48 +4,103 @@ import {
   Text,
   View,
   TouchableOpacity,
+  UIManager,
+  Animated,
+  AsyncStorage,
+  findNodeHandle,
+  Dimensions
 } from 'react-native';
 
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as actionCreators from '../actions';
 
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import measureNode from '../helpers/measureNode'
 
 
-export default class Note extends Component<{}> {
+class Note extends Component<{}> {
 
     constructor(props){
         super(props)
 
+        const { width, height } = Dimensions.get('window');
+        const edgeLength = 100;
+        const axisX = (width / 2) - (edgeLength / 2);
+        const axisY = (height / 2) - (edgeLength / 2);
+
         this.state = {
-            dimension: null
+            noteText: '',
+            noteItemMeasure: null,
+            panAnimation: new Animated.ValueXY({ x: axisX , y: axisY }),
+            scaleAnimation: new Animated.Value(30),
+            dimension: null,
+            isEditing: false
         }
+
+    }
+
+    componentDidMount(){
+
     }
 
 
-    getDimension = (e) => {
-        this.setState({
-            dimension: e.nativeEvent.layout
+    deleteData = (id) => {
+
+        const { todos } = this.props;
+
+        const newTodos = todos.filter( t => {
+            return t.id != id
         })
+
+        AsyncStorage.setItem('rntodo', JSON.stringify(newTodos));
+
+    }
+
+
+    getDimension = async () => {
+        
+        const item = findNodeHandle(this.refs.itemWrap)
+
+        try {
+
+            let itemDimension = await measureNode(item)
+
+            return itemDimension;
+                
+        } catch (err) {
+            console.log(err)
+        }
 
     }
 
     handleEdit = () =>  {
 
-        const { dimension } = this.state
-
-        this.props.handleEdit( dimension )
+        this.getDimension().then( res => {
+            this.props.handleEdit( res )
+        })
+        
     }
 
+    handleDelete = (id) => {
+
+        this.props.deleteTodo(id)
+        this.deleteData(id);
+
+    }
 
   render() {
 
-    const trunc = this.props.val.note.length < 20 ? this.props.val.note :  this.props.val.note.trim().substring(0, 20) + '...';
+    const { todo } = this.props
+
+    const trunc = todo.todo.length < 20 ? todo.todo :  todo.todo.trim().substring(0, 20) + '...';
 
     return (
-        <View key={this.props.keyval} style={styles.note} onLayout={ this.getDimension }>
-
+        <View key={todo.id} style={styles.todo} ref="itemWrap">
+            
             <View style={styles.itemData}>
-                <Text style={ styles.largeText  }>{ trunc }</Text>
-                <Text style={ styles.smallText } >{ this.props.val.date}</Text>
+                <Text style={ styles.largeText  }>{ trunc + ' ' + todo.id }</Text>
+                <Text style={ styles.smallText } >{ todo.date}</Text>
             </View>
 
             <View style={styles.itemControls}>
@@ -54,21 +109,24 @@ export default class Note extends Component<{}> {
                         <Icon name="create" size={24}></Icon>
                     </Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={this.props.handleDelete} >
+                <TouchableOpacity onPress={() => this.handleDelete(todo.id) } >
                     <Text style={styles.noteDelete}>
                         <Icon name="delete-sweep" size={24}></Icon>
                     </Text>
                 </TouchableOpacity>
             </View>
-            
+
         </View>
+
+        
     );
   }
 }
 
 
 const styles = StyleSheet.create({
-    note: {
+    todo: {
+        overflow: 'visible',
         flex: 1,
         borderWidth: 1,
         borderColor: '#ddd',
@@ -97,3 +155,17 @@ const styles = StyleSheet.create({
     }
     
 })
+
+
+
+const mapStateToProps = (state) => {
+    return {
+        todos: state.todos,
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators(actionCreators, dispatch);
+}
+  
+export default connect(mapStateToProps, mapDispatchToProps)(Note)

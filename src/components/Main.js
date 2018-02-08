@@ -7,12 +7,13 @@ import {
   TouchableOpacity,
   ScrollView,
   AsyncStorage,
-  UIManager,
   Animated,
+  Easing,
   Dimensions
 } from 'react-native';
 
 import Note from './Note';
+import Popover from './Popover';
 
 
 export default class Main extends Component<{}> {
@@ -28,24 +29,28 @@ export default class Main extends Component<{}> {
         const axisY = (height / 2) - (edgeLength / 2);
 
         this.state = {
-            noteArray: [],
-            noteText: '',
-            noteItemMeasure: null,
-            panAnimation: new Animated.ValueXY({ x: axisX , y: axisY }),
-            scaleAnimation: new Animated.Value(30),
+            todoText: '',
+            todoItemMeasure: null,
+            //panAnimation: new Animated.ValueXY({ x: axisX , y: axisY }),
+            position:  new Animated.ValueXY(0),
+            opacity:  new Animated.Value(0),
+            scaleValue:  new Animated.Value(0.5),
         }
     }
 
     componentDidMount(){
+        
+        this.fetchData().then(res => {
+            this.props.fetchTodos(res)
+        });
 
-        this.fetchData();
     }
 
-    saveDate = () => {
+    saveData = (obj) => {
 
-        const { noteArray } = this.state;
+        const { todos } = this.props;
 
-        AsyncStorage.setItem('rntodo', JSON.stringify(noteArray));
+        AsyncStorage.setItem('rntodo', JSON.stringify([obj, ...todos]));
 
     }
 
@@ -53,103 +58,97 @@ export default class Main extends Component<{}> {
 
         try {
             
-            let notes = await AsyncStorage.getItem('rntodo');
+            let todos = await AsyncStorage.getItem('rntodo');
 
-            notes = JSON.parse(notes);
-
-            this.setState({
-                noteArray: notes
-            })
+            return JSON.parse(todos);
 
         } catch (error) {
+
             alert(error)
+
         }
 
     }
 
     handleChangeText = (text) => {
         this.setState({
-            noteText : text
+            todoText : text
         })
     }
 
-    addNote = () => {
+    addTodo = () => {
 
-        if( this.state.noteText == '' ) return;
+        if( this.state.todoText == '' ) return;
 
         const d = new Date();
-        const newNotes = this.state.noteArray;
+        const id = d.getTime();
+        const todo = this.state.todoText;
+        const date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate();
 
-        newNotes.push({
-            date: d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate(),
-            note: this.state.noteText
-        })
+        this.props.addTodo(id, todo, date);
 
-        this.setState({
-            noteArray: newNotes,
-            noteText: ''
-        }, () => this.saveDate() );
-
-    }
-
-    deleteNote = ( index ) => {
-
-        let newNotes = this.state.noteArray;
-
-        newNotes.splice( index , 1);
+        this.saveData({id, todo, date});
 
         this.setState({
-            noteArray: newNotes
-        }, () => this.saveDate() )
-
-    }
-    
-    measureNode = (node) => {
-        return new Promise( (resolve, reject) => {
-            UIManager.measureLayoutRelativeToParent(
-                node,
-                (e) => reject(e),
-                (x, y, w, h) => {
-                    resolve({x, y, w, h });
-                }
-            )
-        } )
-    }
-
-    editNote = (dimension) => {
-
-        let {scaleAnimation} = this.state;
-
-        this.setState({noteItemMeasure: dimension }, ()=> {
-
-            Animated.spring(
-                scaleAnimation, {
-                  toValue: 100,
-                  friction: 3
-                }
-              ).start();
-
+            todoText: ''
         });
 
+    }
 
+    editTodo = (dimension) => {
+
+        let {position, opacity, scaleValue} = this.state;
+
+        this.setState({
+            todoItemMeasure: dimension,
+            position: {x: dimension.x , y: (dimension.y - this.scrollValue.__getValue() ) + dimension.h }
+
+        }, () => {
+
+            Animated.parallel([
+                Animated.timing( opacity, {
+                    toValue: 1,
+                    duration: 300,
+                }),
+                Animated.spring( scaleValue, {
+                    toValue: 1,
+                    friction: 5,
+                    // tension: 40
+                })
+            ]).start();
+
+        });
+        
+    } 
+
+    renderTodoItem = () => {
+
+        const {todos} = this.props;
+
+        if( todos.length > 0 ) {
+
+            return todos.map((t, i) => {
+                return <Note key={i} todo={t} />
+            })
+
+        } else {
+            return <View style={styles.todo}><Text>Nothing to do</Text></View>
+        }
+
+
+    }
+
+    handleModalClose = () => {
 
     }
 
     render() {
 
-        let notes = this.state.noteArray.map( (v, k) => {
-            return <Note key={k} keyval={k} val={v} 
-                        handleDelete={ () => { this.deleteNote(k) } } 
-                        handleEdit={ this.editNote } 
-                    />
-        })
-
-        let {noteItemMeasure, scaleAnimation} = this.state;
+        let {todoItemMeasure, position, opacity, scaleValue} = this.state;
 
         let handleScroll = Animated.event([
             {nativeEvent: {contentOffset: {y: this.scrollValue}}},
         ])
-
 
         return (
         <View style={styles.container}>
@@ -159,38 +158,36 @@ export default class Main extends Component<{}> {
             </View>
 
             <ScrollView style={styles.scrollContainer} scrollEventThrottle={16} onScroll={handleScroll}>
-                { notes }
+                { this.renderTodoItem() }
             </ScrollView>
 
             {
-                noteItemMeasure ? 
-                <Animated.View style={{
-                        position: 'absolute',
-                        zIndex: 10,
-                        width: noteItemMeasure.width,
-                        height: scaleAnimation,
-                        backgroundColor: 'blue',
-                        transform: [{
-                            translate: [ noteItemMeasure.x, noteItemMeasure.y - this.scrollValue.__getValue() ]
-                        }]
-                    }}></Animated.View> : null
+                todoItemMeasure ? <Popover 
+                                        width={todoItemMeasure.w} 
+                                        scale={scaleValue} 
+                                        opacity={opacity} 
+                                        position={position}
+                                        handleClose={this.handleModalClose}
+                                        >
+                                        <Text style={{fontSize: 22}}>Title</Text>
+                                 </Popover> : null
             }
 
             <View style={styles.footer}>
                 <TextInput
                     style={styles.TextInput}
-                    value={this.state.noteText}
+                    value={this.state.todoText}
                     placeholder='Note'
                     placeholderTextColor='black'
                     underlineColorAndroid='transparent'
                     onChangeText={ this.handleChangeText }
-                    onSubmitEditing={ this.addNote }
+                    onSubmitEditing={ this.addTodo }
                 ></TextInput>
             </View>
 
             <TouchableOpacity 
                 style={styles.addButton}
-                onPress={ this.addNote }
+                onPress={ this.addTodo }
             >
                 <Text
                     style={styles.addButtonText}
@@ -204,6 +201,19 @@ export default class Main extends Component<{}> {
 }
 
 const styles = StyleSheet.create({
+    todo: {
+        overflow: 'visible',
+        flex: 1,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 10,
+        marginHorizontal: 10,
+    },
   container: {
     flex: 1,
   },
