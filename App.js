@@ -1,20 +1,20 @@
-import React, { Component } from 'react';
-import Main from './src/components/Main';
+import React, { Component } from 'react'
+import Main from './src/components/Main'
 
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 
-import * as actionCreators from './src/actions';
+import * as actionCreators from './src/actions'
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    todos: state.todos,
+    todos: state.todos
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-	return bindActionCreators(actionCreators, dispatch);
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(actionCreators, dispatch)
 }
 
 const App = connect(mapStateToProps, mapDispatchToProps)(Main)
-export default App;
+export default App

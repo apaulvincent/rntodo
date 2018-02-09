@@ -1,27 +1,24 @@
-const todos = ( state = null, action ) => {
-    switch( action.type ) {
+const todos = (state = null, action) => {
+  switch (action.type) {
+    case 'FETCH_TODOS':
+      return action.todos
 
-        case 'FETCH_TODOS':
+    case 'ADD_TODO':
+      return [
+        {
+          id: action.id,
+          todo: action.todo,
+          date: action.date
+        },
+        ...state
+      ]
 
-		    return action.todos;
+    case 'DELETE_TODO':
+      return state.filter(todo => todo.id !== action.id)
 
-        case 'ADD_TODO':
-
-            return [{
-                id: action.id,
-                todo: action.todo,
-                date: action.date
-            }, ...state];
-
-        case 'DELETE_TODO':
-
-            return state.filter(todo => todo.id !== action.id);
-            
-        default:
-
-            return state
-
-    }
-}   
+    default:
+      return state
+  }
+}
 
 export default todos
