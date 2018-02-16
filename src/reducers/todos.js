@@ -1,5 +1,6 @@
 const todos = (state = null, action) => {
   switch (action.type) {
+
     case 'FETCH_TODOS':
       return action.todos
 
@@ -15,6 +16,19 @@ const todos = (state = null, action) => {
 
     case 'DELETE_TODO':
       return state.filter(todo => todo.id !== action.id)
+
+    case 'UPDATE_TODO':
+      const newTodo = state.filter(todo => todo.id !== action.id)
+
+      return [
+        {
+          id: action.id,
+          todo: action.todo,
+          date: action.date,
+          end: action.end
+        },
+        ...newTodo
+      ]
 
     default:
       return state

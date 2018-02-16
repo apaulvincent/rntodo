@@ -22,3 +22,15 @@ export const deleteTodo = id => {
     id
   }
 }
+
+export const updateTodo = (id, todo, date, end = null) => {
+  return {
+    type: 'UPDATE_TODO',
+    id,
+    todo,
+    date,
+    end
+  }
+}
+
+
