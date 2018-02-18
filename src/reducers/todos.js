@@ -1,4 +1,4 @@
-const todos = (state = null, action) => {
+const todos = (state = [], action) => {
   switch (action.type) {
 
     case 'FETCH_TODOS':

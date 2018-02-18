@@ -33,7 +33,7 @@ export default StackNavigator(
         TodoList: {
             screen: TodoList,
             navigationOptions: ({ navigation }) => ({
-                headerTitle: 'Mema Lang',
+                headerTitle: 'ToDo',
                 headerStyle: {
                     backgroundColor: '#f4511e',
                     elevation: 0,
@@ -45,7 +45,7 @@ export default StackNavigator(
             })
         }
     }, {
-        initialRouteName: 'TodoList',
+        initialRouteName: 'Home',
         model: 'modal',
     },
 )

@@ -15,6 +15,7 @@ import {
 
 import { Note } from '../components/Note'
 import { Popover } from '../components/Popover'
+import { ButtonWithInput } from '../components/Button'
 
 import PropTypes from 'prop-types'
 
@@ -42,7 +43,7 @@ class TodoList extends Component {
         const axisY = (height / 2) - (edgeLength / 2);
 
         this.state = {
-            //panAnimation: new Animated.ValueXY({ x: axisX , y: axisY }),
+            panAnimation: new Animated.ValueXY({ x: axisX, y: axisY }),
             todoText: '',
             showModal: false,
             geometry: null,
@@ -55,8 +56,11 @@ class TodoList extends Component {
 
     componentDidMount() {
 
+        // REMOVE ALL RECORDS ON ASYNSTORAGE
+        // AsyncStorage.removeItem('rntodo');
+
         this.fetchData().then(res => {
-            this.props.fetchTodos(res)
+            this.props.fetchTodos(res || [])
         });
 
     }
@@ -64,7 +68,6 @@ class TodoList extends Component {
     saveData = (obj) => {
 
         const { todos } = this.props;
-
         AsyncStorage.setItem('rntodo', JSON.stringify([obj, ...todos]));
 
     }
@@ -188,27 +191,11 @@ class TodoList extends Component {
                         </Popover> : null
                 }
 
-                <View style={styles.footer}>
-                    <TextInput
-                        style={styles.TextInput}
-                        value={this.state.todoText}
-                        placeholder='Todo'
-                        placeholderTextColor='#999'
-                        underlineColorAndroid='transparent'
-                        onChangeText={this.handleChangeText}
-                        onSubmitEditing={this.addTodo}
-                    ></TextInput>
-                </View>
-
-                <TouchableOpacity
-                    style={styles.addButton}
+                <ButtonWithInput
                     onPress={this.addTodo}
-                >
-                    <Text
-                        style={styles.addButtonText}
-                    >ADD</Text>
-                </TouchableOpacity>
-
+                    onChangeText={this.handleChangeText}
+                    fieldText={this.state.todoText}
+                />
 
             </View>
         );
@@ -234,33 +221,7 @@ const styles = ES.create({
     },
     scrollContainer: {
         flex: 1,
-    },
-    footer: {
-
-    },
-    TextInput: {
-        alignSelf: 'stretch',
-        padding: 20,
-        borderTopWidth: 2,
-        borderTopColor: '#ddd'
-    },
-    addButton: {
-        position: 'absolute',
-        zIndex: 1,
-        right: 12,
-        bottom: 12,
-        width: 82,
-        height: 42,
-        paddingLeft: 20,
-        paddingRight: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
-        elevation: 0,
-        backgroundColor: '$lightblue'
-    },
-    addButtonText: {
-        color: '#fff'
-    },
+    }
 });
 
 TodoList.propTypes = {
