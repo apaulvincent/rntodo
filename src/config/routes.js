@@ -30,6 +30,9 @@ export default StackNavigator(
                 header: () => null
             }
         },
+        Options: {
+            screen: Options,
+        },
         TodoList: {
             screen: TodoList,
             navigationOptions: ({ navigation }) => ({
@@ -45,7 +48,7 @@ export default StackNavigator(
             })
         }
     }, {
-        initialRouteName: 'Home',
+        initialRouteName: 'TodoList',
         model: 'modal',
     },
 )

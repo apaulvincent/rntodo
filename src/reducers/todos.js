@@ -1,10 +1,20 @@
+
+import {
+  FETCH_TODOS,
+  ADD_TODO,
+  DELETE_TODO,
+  UPDATE_TODO,
+  RETURN_TODOS
+} from '../actions'
+
+
 const todos = (state = [], action) => {
   switch (action.type) {
 
-    case 'FETCH_TODOS':
-      return action.todos
+    case RETURN_TODOS:
+      return action.result
 
-    case 'ADD_TODO':
+    case ADD_TODO:
       return [
         {
           id: action.id,
@@ -14,10 +24,10 @@ const todos = (state = [], action) => {
         ...state
       ]
 
-    case 'DELETE_TODO':
+    case DELETE_TODO:
       return state.filter(todo => todo.id !== action.id)
 
-    case 'UPDATE_TODO':
+    case UPDATE_TODO:
       const newTodo = state.filter(todo => todo.id !== action.id)
 
       return [

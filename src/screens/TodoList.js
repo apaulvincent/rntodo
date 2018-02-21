@@ -59,31 +59,7 @@ class TodoList extends Component {
         // REMOVE ALL RECORDS ON ASYNSTORAGE
         // AsyncStorage.removeItem('rntodo');
 
-        this.fetchData().then(res => {
-            this.props.fetchTodos(res || [])
-        });
-
-    }
-
-    saveData = (obj) => {
-
-        const { todos } = this.props;
-        AsyncStorage.setItem('rntodo', JSON.stringify([obj, ...todos]));
-
-    }
-
-    fetchData = async () => {
-
-        try {
-
-            let todos = await AsyncStorage.getItem('rntodo');
-            return JSON.parse(todos);
-
-        } catch (error) {
-
-            alert(error)
-
-        }
+        this.props.fetchTodos()
 
     }
 
@@ -103,8 +79,6 @@ class TodoList extends Component {
         const date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate();
 
         this.props.addTodo(id, todo, date);
-
-        this.saveData({ id, todo, date });
 
         this.setState({
             todoText: ''

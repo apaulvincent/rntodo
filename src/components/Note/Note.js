@@ -38,16 +38,6 @@ class Note extends Component {
         // console.log(this.props.todo)
     }
 
-    deleteData = id => {
-        const { todos } = this.props;
-
-        const newTodos = todos.filter(t => {
-            return t.id != id;
-        });
-
-        AsyncStorage.setItem("rntodo", JSON.stringify(newTodos));
-    };
-
     getDimension = async () => {
         const item = findNodeHandle(this.refs.itemWrap);
 
@@ -71,7 +61,6 @@ class Note extends Component {
 
     handleDelete = id => {
         this.props.deleteTodo(id);
-        this.deleteData(id);
     };
 
 
@@ -81,28 +70,11 @@ class Note extends Component {
         });
     }
 
-    updateData = () => {
-
-        const { todos } = this.props;
-
-        AsyncStorage.setItem('rntodo', JSON.stringify(todos));
-
-    }
-
     handleDatePicked = (date) => {
 
         const { todo } = this.props;
 
-        const todoObj = {
-            id: todo.id,
-            date: todo.date,
-            todo: todo.todo,
-            end: date.getTime()
-        }
-
         this.props.updateTodo(todo.id, todo.todo, todo.date, date.getTime())
-
-        this.updateData();
 
         this.handleCloseDatePicker();
 
