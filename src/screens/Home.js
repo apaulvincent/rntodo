@@ -6,6 +6,9 @@ import { Logo } from '../components/Logo'
 import { Header } from '../components/Header'
 import ES from 'react-native-extended-stylesheet'
 
+
+import Icon from "react-native-vector-icons/MaterialIcons";
+
 export default class Home extends Component {
 
     componentDidMount() {
@@ -19,6 +22,10 @@ export default class Home extends Component {
         this.props.navigation.navigate('Options', { title: 'Options' })
     }
 
+    handlePressProjects = () => {
+        this.props.navigation.navigate('Projects', { title: 'Projects' })
+    }
+
     render() {
 
         return (
@@ -29,11 +36,19 @@ export default class Home extends Component {
                     hidden={false}
                 ></StatusBar>
                 <Header onPress={this.handlePressOptions} />
+
                 <View>
                     <TouchableOpacity onPress={this.handlePress}>
-                        <Logo />
+                        <Logo title="TODO" />
                     </TouchableOpacity>
                 </View>
+
+                <View>
+                    <TouchableOpacity onPress={this.handlePressProjects}>
+                        <Logo name="style" title="PROJECTS" />
+                    </TouchableOpacity>
+                </View>
+
             </Container>
         )
 

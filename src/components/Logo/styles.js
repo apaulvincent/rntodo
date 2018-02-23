@@ -4,6 +4,7 @@ export default ES.create({
     logo: {
         alignItems: 'center',
         justifyContent: 'center',
+        paddingVertical: 10
     },
     icon: {
         fontSize: 100,

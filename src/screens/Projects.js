@@ -87,8 +87,12 @@ class Projects extends Component {
 
         this.props.addProject(id, text, [], 'https://i.imgur.com/KZsmUi2l.jpg');
 
-        // const num = this._carousel.props.data.length;
-        // this._carousel.snapToItem(num, true);
+
+        const _this = this
+
+        setTimeout(() => {
+            _this._carousel.snapToItem(_this.props.projects.length, true);
+        }, 600)
 
     }
 

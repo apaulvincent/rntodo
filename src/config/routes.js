@@ -29,12 +29,20 @@ const ProjectsStack = StackNavigator(
     {
         Projects: {
             screen: Projects,
-            navigationOoptions: {
-                header: () => null
-            }
+            navigationOptions: ({ navigation }) => ({
+                headerTitle: 'Projects',
+                headerStyle: {
+                    backgroundColor: '#f4511e',
+                    elevation: 0,
+                },
+                headerTintColor: '#fff',
+                headerTitleStyle: {
+                    fontWeight: 'bold',
+                },
+            })
         }
     }, {
-        headerMode: 'screen'
+        headerMode: 'none'
     }
 )
 
@@ -47,10 +55,7 @@ export default StackNavigator(
             }
         },
         Projects: {
-            screen: ProjectsStack,
-            navigationOptions: {
-                header: () => null
-            }
+            screen: ProjectsStack
         },
         TodoList: {
             screen: TodoList,
@@ -70,7 +75,7 @@ export default StackNavigator(
             screen: Slider,
         }
     }, {
-        initialRouteName: 'Projects',
+        initialRouteName: 'Home',
         model: 'modal',
     },
 )
