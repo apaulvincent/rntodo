@@ -45,7 +45,7 @@ class Projects extends Component {
 
         this.state = {
             projects: [],
-            slider1ActiveSlide: 0
+            activeSlide: 0
         }
     }
 
@@ -87,6 +87,9 @@ class Projects extends Component {
 
         this.props.addProject(id, text, [], 'https://i.imgur.com/KZsmUi2l.jpg');
 
+        // const num = this._carousel.props.data.length;
+        // this._carousel.snapToItem(num, true);
+
     }
 
     render() {
@@ -105,22 +108,25 @@ class Projects extends Component {
                     renderItem={this.renderItem}
                     sliderWidth={sliderWidth}
                     itemWidth={itemWidth}
-                    inactiveSlideScale={0.80}
-                    inactiveSlideOpacity={0.7}
+                    inactiveSlideScale={0.95}
+                    inactiveSlideOpacity={0.8}
                     containerCustomStyle={styles.slider}
                     contentContainerCustomStyle={styles.sliderContentContainer}
-                    firstItem={this.state.slider1ActiveSlide}
+                    firstItem={this.state.activeSlide}
 
                     autoplayDelay={500}
                     autoplayInterval={3000}
-                    onSnapToItem={(index) => this.setState({ slider1ActiveSlide: index })}
-                    activeAnimationType={'spring'}
+                    onSnapToItem={(index) => this.setState({ activeSlide: index })}
+
+                    enableMomentum={true}
+                    decelerationRate={0.9}
+                    activeAnimationType={'timing'}
 
                 />
 
                 <Pagination
                     dotsLength={this.props.projects.length}
-                    activeDotIndex={this.state.slider1ActiveSlide}
+                    activeDotIndex={this.state.activeSlide}
                     containerStyle={styles.paginationContainer}
                     dotColor={'rgba(255, 255, 255, 0.92)'}
                     dotStyle={styles.paginationDot}
