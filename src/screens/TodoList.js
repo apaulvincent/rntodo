@@ -13,7 +13,7 @@ import {
 } from 'react-native'
 
 
-import { Note } from '../components/Note'
+import { Todo } from '../components/Todo'
 import { Popover } from '../components/Popover'
 import { ButtonWithInput } from '../components/Button'
 
@@ -44,7 +44,6 @@ class TodoList extends Component {
 
         this.state = {
             panAnimation: new Animated.ValueXY({ x: axisX, y: axisY }),
-            todoText: '',
             showModal: false,
             geometry: null,
             position: 0,
@@ -63,26 +62,16 @@ class TodoList extends Component {
 
     }
 
-    handleChangeText = (text) => {
-        this.setState({
-            todoText: text
-        })
-    }
+    addTodo = (text) => {
 
-    addTodo = () => {
-
-        if (this.state.todoText == '') return;
+        if (text == '') return;
 
         const d = new Date();
         const id = d.getTime();
-        const todo = this.state.todoText;
+        const todo = text;
         const date = d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate();
 
         this.props.addTodo(id, todo, date);
-
-        this.setState({
-            todoText: ''
-        });
 
     }
 
@@ -119,12 +108,12 @@ class TodoList extends Component {
 
         const { todos } = this.props;
 
-        if (todos && todos.length > 0) {
+        if (todos.length > 0) {
 
             const count = todos.length;
 
             return todos.map((t, i) => {
-                return <Note key={i} todo={t} lastItem={count == (i + 1)} openModal={this.openModal} />
+                return <Todo key={i} todo={t} lastItem={count == (i + 1)} openModal={this.openModal} />
             })
 
         } else {
@@ -167,8 +156,6 @@ class TodoList extends Component {
 
                 <ButtonWithInput
                     onPress={this.addTodo}
-                    onChangeText={this.handleChangeText}
-                    fieldText={this.state.todoText}
                 />
 
             </View>
@@ -205,7 +192,6 @@ TodoList.propTypes = {
 TodoList.defaultProps = {
     todos: []
 }
-
 
 const mapStateToProps = state => {
     return {

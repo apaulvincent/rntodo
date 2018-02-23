@@ -7,10 +7,12 @@ import rootReducer from '../reducers'
 import rootSaga from './sagas'
 
 
+import projects from '../data/projects'
 import todos from '../data/todos'
 
 const defaultState = {
-  todos
+  todos,
+  projects
 }
 
 

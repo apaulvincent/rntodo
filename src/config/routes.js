@@ -1,6 +1,10 @@
 import Home from '../screens/Home'
 import TodoList from '../screens/TodoList'
 import Options from '../screens/Options'
+import Projects from '../screens/Projects'
+
+// COMPONENTS
+import Slider from '../screens/Slider'
 
 import { StackNavigator, DrawerNavigator } from 'react-navigation'
 
@@ -21,6 +25,18 @@ const HomeStack = StackNavigator(
     }
 )
 
+const ProjectsStack = StackNavigator(
+    {
+        Projects: {
+            screen: Projects,
+            navigationOoptions: {
+                header: () => null
+            }
+        }
+    }, {
+        headerMode: 'screen'
+    }
+)
 
 export default StackNavigator(
     {
@@ -30,8 +46,11 @@ export default StackNavigator(
                 header: () => null
             }
         },
-        Options: {
-            screen: Options,
+        Projects: {
+            screen: ProjectsStack,
+            navigationOptions: {
+                header: () => null
+            }
         },
         TodoList: {
             screen: TodoList,
@@ -46,9 +65,12 @@ export default StackNavigator(
                     fontWeight: 'bold',
                 },
             })
+        },
+        Slider: {
+            screen: Slider,
         }
     }, {
-        initialRouteName: 'TodoList',
+        initialRouteName: 'Projects',
         model: 'modal',
     },
 )

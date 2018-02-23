@@ -24,7 +24,7 @@ import { getTimeRemaining } from '../../helpers'
 
 import styles from './styles';
 
-class Note extends Component {
+class Todo extends Component {
     constructor(props) {
         super(props);
 
@@ -161,4 +161,4 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators(actionCreators, dispatch);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Note);
+export default connect(mapStateToProps, mapDispatchToProps)(Todo);

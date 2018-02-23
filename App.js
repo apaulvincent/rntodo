@@ -18,7 +18,8 @@ ES.build({
 
 const mapStateToProps = state => {
   return {
-    todos: state.todos
+    projects: state.projects,
+    todos: state.todos,
   }
 }
 

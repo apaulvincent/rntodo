@@ -1,5 +1,3 @@
-// NOTE ACTIONS :
-
 export const FETCH_TODOS = 'FETCH_TODOS'
 export const RETURN_TODOS = 'RETURN_TODOS'
 export const ADD_TODO = 'ADD_TODO'
@@ -47,3 +45,41 @@ export const updateTodo = (id, todo, date, end = null) => {
 }
 
 
+export const FETCH_PROJECTS = 'FETCH_PROJECTS'
+export const RETURN_PROJECTS = 'RETURN_PROJECTS'
+export const ADD_PROJECT = 'ADD_PROJECT'
+export const UPDATE_PROJECT = 'UPDATE_PROJECT'
+
+
+export const fetchProjects = () => {
+  return {
+    type: FETCH_PROJECTS
+  }
+}
+
+export const returnProjects = (projects) => {
+  return {
+    type: RETURN_PROJECTS,
+    projects
+  }
+}
+
+export const addProject = (id, name, todos = [], image) => {
+  return {
+    type: ADD_PROJECT,
+    id,
+    name,
+    todos,
+    image
+  }
+}
+
+export const updateProject = (id, name, todos = [], image) => {
+  return {
+    type: UPDATE_PROJECT,
+    id,
+    name,
+    todos,
+    image
+  }
+}
