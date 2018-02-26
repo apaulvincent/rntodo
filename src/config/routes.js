@@ -2,6 +2,7 @@ import Home from '../screens/Home'
 import TodoList from '../screens/TodoList'
 import Options from '../screens/Options'
 import Projects from '../screens/Projects'
+import Interact from '../screens/Interact'
 
 // COMPONENTS
 import Slider from '../screens/Slider'
@@ -57,6 +58,12 @@ export default StackNavigator(
         Projects: {
             screen: ProjectsStack
         },
+        Interact: {
+            screen: Interact,
+            navigationOptions: {
+                header: () => null
+            }
+        },
         TodoList: {
             screen: TodoList,
             navigationOptions: ({ navigation }) => ({
@@ -75,7 +82,7 @@ export default StackNavigator(
             screen: Slider,
         }
     }, {
-        initialRouteName: 'Home',
+        initialRouteName: 'Interact',
         model: 'modal',
     },
 )

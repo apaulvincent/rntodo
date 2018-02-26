@@ -7,6 +7,7 @@ import {
     Dimensions,
     Platform,
     AsyncStorage,
+    ScrollView,
     StyleSheet
 } from 'react-native'
 import PropTypes from 'prop-types'
@@ -30,8 +31,8 @@ const wp = (percentage) => {
     return Math.round(value);
 }
 
-const slideHeight = viewportHeight * 0.70;
-const slideWidth = wp(75);
+const slideHeight = viewportHeight * 0.30;
+const slideWidth = wp(100);
 const itemHorizontalMargin = wp(1);
 
 const sliderWidth = viewportWidth;
@@ -59,8 +60,6 @@ class Projects extends Component {
     renderItem({ item, index }) {
         return (
             <View style={styles.slide}>
-
-                <View style={styles.shadow} />
                 <View style={[styles.imageContainer]}>
                     <Image
                         source={{ uri: item.image }}
@@ -71,6 +70,9 @@ class Projects extends Component {
 
                 <View style={styles.textContainer}>
                     <Text style={styles.title}>{item.name.toUpperCase()}</Text>
+                    <ScrollView>
+                        <Text style={styles.title}>Foobbkar</Text>
+                    </ScrollView>
                 </View>
             </View>
 
@@ -87,7 +89,6 @@ class Projects extends Component {
 
         this.props.addProject(id, text, [], 'https://i.imgur.com/KZsmUi2l.jpg');
 
-
         const _this = this
 
         setTimeout(() => {
@@ -103,7 +104,7 @@ class Projects extends Component {
 
         return (
 
-            <Container bgColor="white">
+            <Container bgColor="black">
 
                 <Carousel
                     layout={'default'}
@@ -112,19 +113,21 @@ class Projects extends Component {
                     renderItem={this.renderItem}
                     sliderWidth={sliderWidth}
                     itemWidth={itemWidth}
-                    inactiveSlideScale={0.95}
-                    inactiveSlideOpacity={0.8}
+                    inactiveSlideScale={1}
+                    inactiveSlideOpacity={1}
                     containerCustomStyle={styles.slider}
                     contentContainerCustomStyle={styles.sliderContentContainer}
                     firstItem={this.state.activeSlide}
 
-                    autoplayDelay={500}
-                    autoplayInterval={3000}
+                    // autoplayDelay={500}
+                    // autoplayInterval={3000}
                     onSnapToItem={(index) => this.setState({ activeSlide: index })}
 
                     enableMomentum={true}
-                    decelerationRate={0.9}
+                    decelerationRate={0.3}
                     activeAnimationType={'timing'}
+
+                    enableSnap={true}
 
                 />
 
@@ -177,39 +180,22 @@ export default connect(mapStateToProps, mapDispatchToProps)(Projects)
 const styles = ES.create({
 
     sliderContentContainer: {
-        paddingVertical: 10 // for custom animation
+        paddingVertical: 0 // for custom animation
     },
     slider: {
-        marginTop: 15,
+        marginTop: 0,
         overflow: 'visible' // for custom animations
     },
     slide: {
         width: itemWidth,
         height: slideHeight,
-        paddingHorizontal: 0,
-        paddingBottom: 18, // needed for shadow
     },
-    shadow: {
-        position: 'absolute',
-        top: 0,
-        left: itemHorizontalMargin,
-        right: itemHorizontalMargin,
-        bottom: 18,
-        shadowColor: '#000000',
-        shadowOpacity: 0.5,
-        shadowOffset: { width: 0, height: 10 },
-        shadowRadius: 10,
-        borderRadius: 8
-    },
-
 
     // Image
     imageContainer: {
         flex: 1,
         marginBottom: 0,
         backgroundColor: 'white',
-        borderTopLeftRadius: 8,
-        borderTopRightRadius: 8
     },
     imageContainerEven: {
         backgroundColor: '#000'
@@ -217,13 +203,7 @@ const styles = ES.create({
     image: {
         ...StyleSheet.absoluteFillObject,
         resizeMode: 'cover',
-        borderRadius: 8,
-        borderTopLeftRadius: 8,
-        borderTopRightRadius: 8,
-        borderBottomLeftRadius: 0,
-        borderBottomRightRadius: 0,
     },
-
 
     // Text
     textContainer: {
@@ -231,12 +211,10 @@ const styles = ES.create({
         paddingTop: 20 - 8,
         paddingBottom: 20,
         paddingHorizontal: 16,
-        backgroundColor: 'black',
-        borderBottomLeftRadius: 8,
-        borderBottomRightRadius: 8
+        backgroundColor: '#fff',
     },
     title: {
-        color: '#fff',
+        color: '#000',
         fontSize: 13,
         fontWeight: 'bold',
         letterSpacing: 0.5,
